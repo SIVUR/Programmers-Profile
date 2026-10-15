@@ -1,26 +1,58 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import {
+    ExpenseDemo,
+    LibraryDemo,
+    PortfolioDemo,
+    StudentDemo,
+    TaskDemo,
+    WeatherDemo,
+} from "./ProjectDemos.jsx";
 
-const skills = ["HTML", "CSS", "JavaScript", "PHP", "MySQL"];
+const skills = ["HTML", "CSS", "JavaScript", "React.js", "PHP", "MySQL"];
 
 const projects = [
     {
         number: "01",
+        category: "Database",
         name: "Student Management System",
         description:
-            "A school project concept for organizing student records and making information easier to manage.",
+            "Add and remove student records in this browser-based management demo.",
     },
     {
         number: "02",
+        category: "Web",
         name: "Personal Portfolio",
         description:
-            "A responsive portfolio to introduce myself, share my skills, and showcase my work.",
+            "The responsive portfolio you’re viewing, with my skills, projects, and contact links.",
     },
     {
         number: "03",
+        category: "Database",
         name: "Library Database",
         description:
-            "A database project concept for keeping track of books, borrowers, and library records.",
+            "Add books to a local catalog and mark them borrowed or available.",
+    },
+    {
+        number: "04",
+        category: "Web",
+        name: "Task Tracker",
+        description:
+            "Add tasks, mark them complete, and keep your list saved in this browser.",
+    },
+    {
+        number: "05",
+        category: "Web",
+        name: "Weather Dashboard",
+        description:
+            "Look up current temperature, humidity, and wind for a city using live weather data.",
+    },
+    {
+        number: "06",
+        category: "Database",
+        name: "Expense Tracker",
+        description:
+            "Record expenses by category and see your total update instantly.",
     },
 ];
 
@@ -28,9 +60,79 @@ const githubUrl = "https://github.com/SIVUR";
 const facebookUrl = "https://www.facebook.com/BenjzBagsbunnyJr/";
 const emailAddress = "benjbagoyboy@gmail.com";
 
+function ProjectDemoDialog({ project, onClose }) {
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") onClose();
+        }
+
+        window.addEventListener("keydown", closeOnEscape);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", closeOnEscape);
+        };
+    }, [onClose]);
+
+    const demos = {
+        "Student Management System": <StudentDemo />,
+        "Personal Portfolio": (
+            <PortfolioDemo
+                githubUrl={githubUrl}
+                facebookUrl={facebookUrl}
+                emailAddress={emailAddress}
+            />
+        ),
+        "Library Database": <LibraryDemo />,
+        "Task Tracker": <TaskDemo />,
+        "Weather Dashboard": <WeatherDemo />,
+        "Expense Tracker": <ExpenseDemo />,
+    };
+
+    return (
+        <div
+            className="demo-backdrop"
+            onMouseDown={(event) => {
+                if (event.target === event.currentTarget) onClose();
+            }}
+        >
+            <section
+                className="demo-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="demo-dialog-title"
+            >
+                <div className="demo-dialog-heading">
+                    <div>
+                        <p className="section-kicker">WORKING PROJECT DEMO</p>
+                        <h2 id="demo-dialog-title">{project.name}</h2>
+                    </div>
+                    <button className="demo-close" type="button" onClick={onClose} aria-label="Close project demo" autoFocus>
+                        ×
+                    </button>
+                </div>
+                {demos[project.name]}
+            </section>
+        </div>
+    );
+}
+
 function Navigation() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [theme, setTheme] = useState(
+        () =>
+            window.localStorage.getItem("portfolio-theme") === "light"
+                ? "light"
+                : "dark",
+    );
     const closeMenu = () => setMenuOpen(false);
+
+    useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+        window.localStorage.setItem("portfolio-theme", theme);
+    }, [theme]);
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark fixed-top site-nav" aria-label="Main navigation">
@@ -65,6 +167,24 @@ function Navigation() {
                                 </a>
                             </li>
                         ))}
+                        <li className="nav-item">
+                            <button
+                                className="btn theme-toggle"
+                                type="button"
+                                aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+                                aria-pressed={theme === "light"}
+                                onClick={() =>
+                                    setTheme((currentTheme) =>
+                                        currentTheme === "dark" ? "light" : "dark",
+                                    )
+                                }
+                            >
+                                <span aria-hidden="true">{theme === "dark" ? "☼" : "☾"}</span>
+                                <span className="theme-toggle-label">
+                                    {theme === "dark" ? "Light mode" : "Dark mode"}
+                                </span>
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -73,6 +193,15 @@ function Navigation() {
 }
 
 function App() {
+    const [activeCategory, setActiveCategory] = useState("All");
+    const [activeProject, setActiveProject] = useState(null);
+    const closeProject = useCallback(() => setActiveProject(null), []);
+
+    const visibleProjects = projects.filter(
+        (project) =>
+            activeCategory === "All" || project.category === activeCategory,
+    );
+
     useEffect(() => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -99,7 +228,7 @@ function App() {
             revealObserver.disconnect();
             document.documentElement.classList.remove("motion-ready");
         };
-    }, []);
+    }, [activeCategory]);
 
     return (
         <>
@@ -197,11 +326,11 @@ function App() {
                         </div>
                         <div className="row g-3 skills-grid">
                             {skills.map((skill, index) => (
-                                <div className="col-6 col-md" key={skill}>
+                                <div className="col-6 col-md-4" key={skill}>
                                     <div className="skill-tile reveal">
                                         <span className="skill-number">0{index + 1}</span>
                                         <span className="skill-symbol" aria-hidden="true">
-                                            {["</>", "#", "JS", "PHP", "DB"][index]}
+                                            {["</>", "#", "JS", "R", "PHP", "DB"][index]}
                                         </span>
                                         <h3>{skill}</h3>
                                         <span className="skill-status">Learning</span>
@@ -223,19 +352,39 @@ function App() {
                                 Small steps, practical ideas, and plenty of room to grow.
                             </p>
                         </div>
+                        <div className="project-filters" aria-label="Filter projects by type">
+                            {["All", "Web", "Database"].map((category) => (
+                                <button
+                                    className={`project-filter${activeCategory === category ? " is-active" : ""}`}
+                                    type="button"
+                                    key={category}
+                                    aria-pressed={activeCategory === category}
+                                    onClick={() => setActiveCategory(category)}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                            <span className="project-count" aria-live="polite">
+                                {visibleProjects.length} {visibleProjects.length === 1 ? "project" : "projects"}
+                            </span>
+                        </div>
                         <div className="row g-4">
-                            {projects.map((project) => (
+                            {visibleProjects.map((project) => (
                                 <div className="col-md-6 col-lg-4" key={project.number}>
                                     <article className="project-card reveal">
                                         <div className="project-card-top">
                                             <span>PROJECT / {project.number}</span>
-                                            <span className="project-arrow" aria-hidden="true">↗</span>
+                                            <span className="project-category">{project.category}</span>
                                         </div>
                                         <h3>{project.name}</h3>
                                         <p>{project.description}</p>
-                                        <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-link">
-                                            View on GitHub <span aria-hidden="true">↗</span>
-                                        </a>
+                                        <button
+                                            className="text-link project-launch"
+                                            type="button"
+                                            onClick={() => setActiveProject(project)}
+                                        >
+                                            Try live demo <span aria-hidden="true">↗</span>
+                                        </button>
                                     </article>
                                 </div>
                             ))}
@@ -284,6 +433,9 @@ function App() {
                     <a href="#home">Back to top ↑</a>
                 </div>
             </footer>
+            {activeProject && (
+                <ProjectDemoDialog project={activeProject} onClose={closeProject} />
+            )}
         </>
     );
 }
