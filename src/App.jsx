@@ -249,8 +249,8 @@ function App() {
                                 </h1>
                                 <p className="hero-intro">
                                     I’m <strong>Bagoyboy Benjamin Jr.</strong>, an IT student and
-                                    aspiring web developer who enjoys turning ideas into useful,
-                                    thoughtful web experiences.
+                                    aspiring software engineer who enjoys turning ideas into useful,
+                                    thoughtful software experiences.
                                 </p>
                                 <div className="hero-actions d-flex flex-wrap gap-3">
                                     <a className="btn btn-primary btn-lg" href="#projects">
@@ -260,7 +260,7 @@ function App() {
                                         Get in touch
                                     </a>
                                 </div>
-                                <p className="hero-role">Aspiring Web Developer <span>· IT Student</span></p>
+                                <p className="hero-role">Aspiring Software Engineer <span>· IT Student</span></p>
                             </div>
 
                             <div className="col-lg-5 reveal">
@@ -275,7 +275,7 @@ function App() {
                                         <span className="availability-dot" />
                                         <span>Curious mind. Growing developer.</span>
                                     </div>
-                                    <span className="portrait-index">IT STUDENT · WEB DEVELOPER</span>
+                                    <span className="portrait-index">IT STUDENT · SOFTWARE ENGINEER</span>
                                 </div>
                             </div>
                         </div>
@@ -296,10 +296,10 @@ function App() {
                             <div className="col-lg-7 offset-lg-1 reveal">
                                 <p className="about-lead">
                                     I’m an IT student and aspiring programmer with a growing
-                                    interest in web development.
+                                    interest in software development.
                                 </p>
                                 <p className="section-copy">
-                                    I enjoy learning how websites work, solving problems with
+                                    I enjoy learning how software works, solving problems with
                                     code, and creating projects that make everyday tasks a
                                     little easier. I’m building my skills one idea and one
                                     project at a time.
