@@ -519,7 +519,7 @@ a {
     letter-spacing: 0.1em;
 }
 
-.project-filters {
+.project-search-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -527,25 +527,47 @@ a {
     margin: -0.6rem 0 1.75rem;
 }
 
-.project-filter {
-    padding: 0.45rem 0.85rem;
+.project-search {
+    position: relative;
+    flex: 1 1 230px;
+    max-width: 360px;
+    margin-left: 0.35rem;
+}
+
+.project-search input {
+    width: 100%;
+    min-height: 40px;
+    padding: 0.45rem 2.25rem 0.45rem 0.85rem;
     border: 1px solid var(--line);
     border-radius: 999px;
-    background: transparent;
-    color: var(--muted);
+    outline: none;
+    background: var(--surface);
+    color: var(--text);
     font: inherit;
     font-size: 0.82rem;
-    transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
-.project-filter:hover,
-.project-filter.is-active {
+.project-search input::placeholder {
+    color: var(--quiet);
+}
+
+.project-search input:focus {
     border-color: var(--accent);
-    background: rgba(193, 60, 255, 0.12);
-    color: var(--accent-bright);
+    box-shadow: 0 0 0 3px rgba(193, 60, 255, 0.16);
 }
 
-.project-filter:focus-visible,
+.project-search-icon {
+    position: absolute;
+    top: 50%;
+    right: 0.8rem;
+    color: var(--accent-bright);
+    font-size: 1.25rem;
+    line-height: 1;
+    pointer-events: none;
+    transform: translateY(-54%);
+}
+
 .theme-toggle:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
@@ -555,6 +577,15 @@ a {
     margin-left: auto;
     color: var(--quiet);
     font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.project-empty {
+    padding: 1.5rem;
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    color: var(--muted);
+    text-align: center;
 }
 
 .project-category {
@@ -1078,6 +1109,18 @@ a {
         margin-bottom: 2rem;
     }
 
+    .project-search {
+        order: 1;
+        flex-basis: 100%;
+        max-width: none;
+        margin: 0.25rem 0 0;
+    }
+
+    .project-count {
+        order: 2;
+        margin-left: 0;
+    }
+
     .heading-aside {
         max-width: 500px;
     }
@@ -1141,7 +1184,6 @@ a {
 .nav-toggle,
 .theme-toggle,
 .hero-actions .btn,
-.project-filter,
 .project-launch,
 .demo-form .btn,
 .demo-close,
@@ -1158,7 +1200,6 @@ a {
     .nav-toggle:hover,
     .theme-toggle:hover,
     .hero-actions .btn:hover,
-    .project-filter:hover,
     .project-launch:hover,
     .demo-form .btn:not(:disabled):hover,
     .demo-close:hover,
@@ -1170,7 +1211,6 @@ a {
     .nav-toggle:active,
     .theme-toggle:active,
     .hero-actions .btn:active,
-    .project-filter:active,
     .project-launch:active,
     .demo-form .btn:not(:disabled):active,
     .demo-close:active,

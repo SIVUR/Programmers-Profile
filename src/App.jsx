@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
     ExpenseDemo,
     LibraryDemo,
@@ -236,14 +236,20 @@ function Navigation() {
 }
 
 function App() {
-    const [activeCategory, setActiveCategory] = useState("All");
+    const [projectSearch, setProjectSearch] = useState("");
     const [activeProject, setActiveProject] = useState(null);
     const closeProject = useCallback(() => setActiveProject(null), []);
+    const revealObserverRef = useRef(null);
 
-    const visibleProjects = projects.filter(
-        (project) =>
-            activeCategory === "All" || project.category === activeCategory,
-    );
+    const searchText = projectSearch.trim().toLowerCase();
+    const visibleProjects = projects.filter((project) => {
+        const matchesSearch =
+            !searchText ||
+            project.name.toLowerCase().includes(searchText) ||
+            project.description.toLowerCase().includes(searchText);
+
+        return matchesSearch;
+    });
 
     useEffect(() => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -253,7 +259,7 @@ function App() {
         }
 
         document.documentElement.classList.add("motion-ready");
-        const revealObserver = new IntersectionObserver(
+        const observer = new IntersectionObserver(
             (entries, observer) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
@@ -264,14 +270,27 @@ function App() {
             },
             { threshold: 0.12 },
         );
-
-        document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+        revealObserverRef.current = observer;
 
         return () => {
-            revealObserver.disconnect();
+            observer.disconnect();
+            revealObserverRef.current = null;
             document.documentElement.classList.remove("motion-ready");
         };
-    }, [activeCategory]);
+    }, []);
+
+    useEffect(() => {
+        const observer = revealObserverRef.current;
+        if (!observer) return;
+
+        document.querySelectorAll(".reveal:not(.is-visible)").forEach((element) => {
+            if (element.getBoundingClientRect().top < window.innerHeight) {
+                element.classList.add("is-visible");
+            } else {
+                observer.observe(element);
+            }
+        });
+    }, [projectSearch]);
 
     return (
         <>
@@ -414,43 +433,48 @@ function App() {
                                 Small steps, practical ideas, and plenty of room to grow.
                             </p>
                         </div>
-                        <div className="project-filters" aria-label="Filter projects by type">
-                            {["All", "Web", "Database"].map((category) => (
-                                <button
-                                    className={`project-filter${activeCategory === category ? " is-active" : ""}`}
-                                    type="button"
-                                    key={category}
-                                    aria-pressed={activeCategory === category}
-                                    onClick={() => setActiveCategory(category)}
-                                >
-                                    {category}
-                                </button>
-                            ))}
+                        <div className="project-search-row">
+                            <label className="project-search">
+                                <span className="visually-hidden">Search projects by name or description</span>
+                                <input
+                                    type="search"
+                                    value={projectSearch}
+                                    onChange={(event) => setProjectSearch(event.target.value)}
+                                    placeholder="Search projects..."
+                                />
+                                <span className="project-search-icon" aria-hidden="true">⌕</span>
+                            </label>
                             <span className="project-count" aria-live="polite">
                                 {visibleProjects.length} {visibleProjects.length === 1 ? "project" : "projects"}
                             </span>
                         </div>
-                        <div className="row g-4">
-                            {visibleProjects.map((project) => (
-                                <div className="col-md-6 col-lg-4" key={project.number}>
-                                    <article className="project-card reveal">
-                                        <div className="project-card-top">
-                                            <span>PROJECT / {project.number}</span>
-                                            <span className="project-category">{project.category}</span>
-                                        </div>
-                                        <h3>{project.name}</h3>
-                                        <p>{project.description}</p>
-                                        <button
-                                            className="text-link project-launch"
-                                            type="button"
-                                            onClick={() => setActiveProject(project)}
-                                        >
-                                            Try live demo <span aria-hidden="true">↗</span>
-                                        </button>
-                                    </article>
-                                </div>
-                            ))}
-                        </div>
+                        {visibleProjects.length > 0 ? (
+                            <div className="row g-4">
+                                {visibleProjects.map((project) => (
+                                    <div className="col-md-6 col-lg-4" key={project.number}>
+                                        <article className="project-card reveal">
+                                            <div className="project-card-top">
+                                                <span>PROJECT / {project.number}</span>
+                                                <span className="project-category">{project.category}</span>
+                                            </div>
+                                            <h3>{project.name}</h3>
+                                            <p>{project.description}</p>
+                                            <button
+                                                className="text-link project-launch"
+                                                type="button"
+                                                onClick={() => setActiveProject(project)}
+                                            >
+                                                Try live demo <span aria-hidden="true">↗</span>
+                                            </button>
+                                        </article>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="project-empty" role="status">
+                                No projects match that search. Try another name or description.
+                            </p>
+                        )}
                     </div>
                 </section>
 
