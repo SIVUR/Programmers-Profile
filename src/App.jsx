@@ -13,44 +13,38 @@ const skills = [
     {
         name: "HTML",
         mark: "</>",
-        status: "Practicing now",
+        status: "Learning",
         description: "Structuring pages with clear, semantic elements.",
-        progress: 65,
     },
     {
         name: "CSS",
         mark: "#",
-        status: "Practicing now",
+        status: "Learning",
         description: "Creating responsive layouts and polished interactions.",
-        progress: 45,
     },
     {
         name: "JavaScript",
         mark: "JS",
-        status: "Practicing now",
+        status: "Learning",
         description: "Working with events, state, and browser storage.",
-        progress: 55,
     },
     {
         name: "React.js",
         mark: "R",
-        status: "Practicing now",
+        status: "Learning",
         description: "Building reusable components and interactive demos.",
-        progress: 35,
     },
     {
         name: "PHP",
         mark: "PHP",
-        status: "Up next",
+        status: "Learning",
         description: "A language I plan to explore for backend projects.",
-        progress: 20,
     },
     {
         name: "MySQL",
         mark: "DB",
-        status: "Up next",
+        status: "Learning",
         description: "A database technology I plan to use in future projects.",
-        progress: 30,
     },
 ];
 
@@ -383,8 +377,7 @@ function App() {
                                 <h2 className="section-title">Skills in progress<span>.</span></h2>
                             </div>
                             <p className="section-copy heading-aside">
-                                A snapshot of what I’m practicing now and what I plan to explore next.{" "}
-                                Progress percentages are starter self-assessments you can update as you learn.
+                                The tools I’m learning and using as I grow as a developer.
                             </p>
                         </div>
                         <div className="row g-3 skills-grid">
@@ -394,27 +387,10 @@ function App() {
                                         <span className="skill-number">0{index + 1}</span>
                                         <span className="skill-symbol" aria-hidden="true">{skill.mark}</span>
                                         <h3>{skill.name}</h3>
-                                        <span className={`skill-status${skill.status === "Up next" ? " is-up-next" : ""}`}>
+                                        <span className="skill-status">
                                             {skill.status}
                                         </span>
                                         <p className="skill-description">{skill.description}</p>
-                                        <div className="skill-progress-label">
-                                            <span>Self-assessed progress</span>
-                                            <span>{skill.progress}%</span>
-                                        </div>
-                                        <div
-                                            className="skill-progress-track"
-                                            role="progressbar"
-                                            aria-label={`${skill.name} self-assessed learning progress`}
-                                            aria-valuemin="0"
-                                            aria-valuemax="100"
-                                            aria-valuenow={skill.progress}
-                                        >
-                                            <span
-                                                className="skill-progress-fill"
-                                                style={{ width: `${skill.progress}%` }}
-                                            />
-                                        </div>
                                     </article>
                                 </div>
                             ))}
