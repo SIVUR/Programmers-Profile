@@ -338,7 +338,7 @@ function App() {
                                         <span className="availability-dot" />
                                         <span>Curious mind. Growing developer.</span>
                                     </div>
-                                    <span className="portrait-index">IT STUDENT · SOFTWARE ENGINEER</span>
+                                    <span className="portrait-index">IT STUDENT · FUTURE MILLIONAIRE</span>
                                 </div>
                             </div>
                         </div>
@@ -532,7 +532,9 @@ function App() {
             <footer className="site-footer">
                 <div className="container d-flex flex-column flex-sm-row justify-content-between gap-2">
                     <span>© {new Date().getFullYear()} Bagoyboy Benjamin Jr.</span>
-                    <a href="#home">Back to top ↑</a>
+                    <a className="back-to-top-button" href="#home">
+                        Back to top <span aria-hidden="true">↑</span>
+                    </a>
                 </div>
             </footer>
             {activeProject && (
