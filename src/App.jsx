@@ -231,12 +231,14 @@ function Navigation() {
 
 function App() {
     const [projectSearch, setProjectSearch] = useState("");
+    const [showAllSkills, setShowAllSkills] = useState(false);
+    const [showAllProjects, setShowAllProjects] = useState(false);
     const [activeProject, setActiveProject] = useState(null);
     const closeProject = useCallback(() => setActiveProject(null), []);
     const revealObserverRef = useRef(null);
 
     const searchText = projectSearch.trim().toLowerCase();
-    const visibleProjects = projects.filter((project) => {
+    const matchingProjects = projects.filter((project) => {
         const matchesSearch =
             !searchText ||
             project.name.toLowerCase().includes(searchText) ||
@@ -244,6 +246,11 @@ function App() {
 
         return matchesSearch;
     });
+    const visibleSkills = showAllSkills ? skills : skills.slice(0, 3);
+    const visibleProjects =
+        showAllProjects || searchText
+            ? matchingProjects
+            : matchingProjects.slice(0, 3);
 
     useEffect(() => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -284,7 +291,7 @@ function App() {
                 observer.observe(element);
             }
         });
-    }, [projectSearch]);
+    }, [projectSearch, showAllSkills, showAllProjects]);
 
     return (
         <>
@@ -380,21 +387,36 @@ function App() {
                                 The tools I’m learning and using as I grow as a developer.
                             </p>
                         </div>
-                        <div className="row g-3 skills-grid">
-                            {skills.map((skill, index) => (
-                                <div className="col-6 col-md-4" key={skill.name}>
-                                    <article className="skill-tile reveal">
-                                        <span className="skill-number">0{index + 1}</span>
-                                        <span className="skill-symbol" aria-hidden="true">{skill.mark}</span>
-                                        <h3>{skill.name}</h3>
-                                        <span className="skill-status">
-                                            {skill.status}
-                                        </span>
-                                        <p className="skill-description">{skill.description}</p>
-                                    </article>
-                                </div>
-                            ))}
+                        <div className="row g-3 skills-grid" id="skills-grid">
+                            {visibleSkills.map((skill) => {
+                                const index = skills.indexOf(skill);
+                                return (
+                                    <div className="col-6 col-md-4" key={skill.name}>
+                                        <article className="skill-tile reveal">
+                                            <span className="skill-number">0{index + 1}</span>
+                                            <span className="skill-symbol" aria-hidden="true">{skill.mark}</span>
+                                            <h3>{skill.name}</h3>
+                                            <span className="skill-status">{skill.status}</span>
+                                            <p className="skill-description">{skill.description}</p>
+                                        </article>
+                                    </div>
+                                );
+                            })}
                         </div>
+                        {skills.length > 3 && (
+                            <div className="section-more">
+                                <button
+                                    className="see-more-button"
+                                    type="button"
+                                    aria-expanded={showAllSkills}
+                                    aria-controls="skills-grid"
+                                    onClick={() => setShowAllSkills((showAll) => !showAll)}
+                                >
+                                    {showAllSkills ? "See less" : "See more"}
+                                    <span aria-hidden="true">{showAllSkills ? "↑" : "↓"}</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </section>
 
@@ -421,31 +443,49 @@ function App() {
                                 <span className="project-search-icon" aria-hidden="true">⌕</span>
                             </label>
                             <span className="project-count" aria-live="polite">
-                                {visibleProjects.length} {visibleProjects.length === 1 ? "project" : "projects"}
+                                {searchText
+                                    ? `${matchingProjects.length} ${matchingProjects.length === 1 ? "match" : "matches"}`
+                                    : `Showing ${visibleProjects.length} of ${projects.length} projects`}
                             </span>
                         </div>
                         {visibleProjects.length > 0 ? (
-                            <div className="row g-4">
-                                {visibleProjects.map((project) => (
-                                    <div className="col-md-6 col-lg-4" key={project.number}>
-                                        <article className="project-card reveal">
-                                            <div className="project-card-top">
-                                                <span>PROJECT / {project.number}</span>
-                                                <span className="project-category">{project.category}</span>
-                                            </div>
-                                            <h3>{project.name}</h3>
-                                            <p>{project.description}</p>
-                                            <button
-                                                className="text-link project-launch"
-                                                type="button"
-                                                onClick={() => setActiveProject(project)}
-                                            >
-                                                Try live demo <span aria-hidden="true">↗</span>
-                                            </button>
-                                        </article>
+                            <>
+                                <div className="row g-4" id="projects-grid">
+                                    {visibleProjects.map((project) => (
+                                        <div className="col-md-6 col-lg-4" key={project.number}>
+                                            <article className="project-card reveal">
+                                                <div className="project-card-top">
+                                                    <span>PROJECT / {project.number}</span>
+                                                    <span className="project-category">{project.category}</span>
+                                                </div>
+                                                <h3>{project.name}</h3>
+                                                <p>{project.description}</p>
+                                                <button
+                                                    className="text-link project-launch"
+                                                    type="button"
+                                                    onClick={() => setActiveProject(project)}
+                                                >
+                                                    Try live demo <span aria-hidden="true">↗</span>
+                                                </button>
+                                            </article>
+                                        </div>
+                                    ))}
+                                </div>
+                                {!searchText && projects.length > 3 && (
+                                    <div className="section-more">
+                                        <button
+                                            className="see-more-button"
+                                            type="button"
+                                            aria-expanded={showAllProjects}
+                                            aria-controls="projects-grid"
+                                            onClick={() => setShowAllProjects((showAll) => !showAll)}
+                                        >
+                                            {showAllProjects ? "See less" : "See more"}
+                                            <span aria-hidden="true">{showAllProjects ? "↑" : "↓"}</span>
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
+                                )}
+                            </>
                         ) : (
                             <p className="project-empty" role="status">
                                 No projects match that search. Try another name or description.

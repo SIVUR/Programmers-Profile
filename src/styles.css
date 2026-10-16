@@ -370,6 +370,42 @@ a {
     padding-bottom: 0.25rem;
 }
 
+.section-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.75rem;
+}
+
+.see-more-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--accent-bright);
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.see-more-button:hover,
+.see-more-button:focus-visible {
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.see-more-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.see-more-button span {
+    font-size: 1rem;
+}
+
 .skill-tile {
     position: relative;
     display: flex;
@@ -1137,6 +1173,7 @@ a {
 .nav-toggle,
 .theme-toggle,
 .hero-actions .btn,
+.see-more-button,
 .project-launch,
 .demo-form .btn,
 .demo-close,
@@ -1153,6 +1190,7 @@ a {
     .nav-toggle:hover,
     .theme-toggle:hover,
     .hero-actions .btn:hover,
+    .see-more-button:hover,
     .project-launch:hover,
     .demo-form .btn:not(:disabled):hover,
     .demo-close:hover,
@@ -1164,6 +1202,7 @@ a {
     .nav-toggle:active,
     .theme-toggle:active,
     .hero-actions .btn:active,
+    .see-more-button:active,
     .project-launch:active,
     .demo-form .btn:not(:disabled):active,
     .demo-close:active,
