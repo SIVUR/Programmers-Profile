@@ -9,7 +9,50 @@ import {
     WeatherDemo,
 } from "./ProjectDemos.jsx";
 
-const skills = ["HTML", "CSS", "JavaScript", "React.js", "PHP", "MySQL"];
+const skills = [
+    {
+        name: "HTML",
+        mark: "</>",
+        status: "Practicing now",
+        description: "Structuring pages with clear, semantic elements.",
+        progress: 65,
+    },
+    {
+        name: "CSS",
+        mark: "#",
+        status: "Practicing now",
+        description: "Creating responsive layouts and polished interactions.",
+        progress: 45,
+    },
+    {
+        name: "JavaScript",
+        mark: "JS",
+        status: "Practicing now",
+        description: "Working with events, state, and browser storage.",
+        progress: 55,
+    },
+    {
+        name: "React.js",
+        mark: "R",
+        status: "Practicing now",
+        description: "Building reusable components and interactive demos.",
+        progress: 35,
+    },
+    {
+        name: "PHP",
+        mark: "PHP",
+        status: "Up next",
+        description: "A language I plan to explore for backend projects.",
+        progress: 20,
+    },
+    {
+        name: "MySQL",
+        mark: "DB",
+        status: "Up next",
+        description: "A database technology I plan to use in future projects.",
+        progress: 30,
+    },
+];
 
 const projects = [
     {
@@ -321,20 +364,39 @@ function App() {
                                 <h2 className="section-title">Skills in progress<span>.</span></h2>
                             </div>
                             <p className="section-copy heading-aside">
-                                The tools I’m learning and using as I grow as a developer.
+                                A snapshot of what I’m practicing now and what I plan to explore next.{" "}
+                                Progress percentages are starter self-assessments you can update as you learn.
                             </p>
                         </div>
                         <div className="row g-3 skills-grid">
                             {skills.map((skill, index) => (
-                                <div className="col-6 col-md-4" key={skill}>
-                                    <div className="skill-tile reveal">
+                                <div className="col-6 col-md-4" key={skill.name}>
+                                    <article className="skill-tile reveal">
                                         <span className="skill-number">0{index + 1}</span>
-                                        <span className="skill-symbol" aria-hidden="true">
-                                            {["</>", "#", "JS", "R", "PHP", "DB"][index]}
+                                        <span className="skill-symbol" aria-hidden="true">{skill.mark}</span>
+                                        <h3>{skill.name}</h3>
+                                        <span className={`skill-status${skill.status === "Up next" ? " is-up-next" : ""}`}>
+                                            {skill.status}
                                         </span>
-                                        <h3>{skill}</h3>
-                                        <span className="skill-status">Learning</span>
-                                    </div>
+                                        <p className="skill-description">{skill.description}</p>
+                                        <div className="skill-progress-label">
+                                            <span>Self-assessed progress</span>
+                                            <span>{skill.progress}%</span>
+                                        </div>
+                                        <div
+                                            className="skill-progress-track"
+                                            role="progressbar"
+                                            aria-label={`${skill.name} self-assessed learning progress`}
+                                            aria-valuemin="0"
+                                            aria-valuemax="100"
+                                            aria-valuenow={skill.progress}
+                                        >
+                                            <span
+                                                className="skill-progress-fill"
+                                                style={{ width: `${skill.progress}%` }}
+                                            />
+                                        </div>
+                                    </article>
                                 </div>
                             ))}
                         </div>
